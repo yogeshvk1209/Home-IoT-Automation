@@ -1,0 +1,12 @@
+# Ignore Secrets
+esphome/secrets.yaml
+**/secrets.yaml
+
+# Ignore ESPHome Build Artifacts (Huge folders)
+esphome/.esphome/
+esphome/.pio/
+esphome/common/
+
+# Ignore Home Assistant Database & Logs
+homeassistant/*.db
+homeassistant/*.log

@@ -1,0 +1,25 @@
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - ./ha_config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro  # Helps with device discovery
+    restart: unless-stopped
+    # THIS LINE SAVES YOU:
+    network_mode: host
+
+  esphome:
+    container_name: esphome
+    image: ghcr.io/esphome/esphome
+    volumes:
+      - ./esphome_config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    # THIS LINE SAVES YOU:
+    network_mode: host
+    # Map USB devices so you can flash from browser
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    privileged: true # Often needed for reliable USB access

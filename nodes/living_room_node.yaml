@@ -1,0 +1,63 @@
+esphome:
+  name: living-room-node
+  friendly_name: Living Room Sensor Node
+
+esp8266:
+  board: nodemcuv2
+
+# Enable logging (Crucial for debugging)
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Enable Over-The-Air updates (So you can add the light sensor later via WiFi)
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  
+  # Failover Hotspot
+  ap:
+    ssid: "Test-Bench-Fallout"
+    password: !secret ap_password
+
+# ------------------------------------------------
+# I2C BUS SETUP (Required for BME280)
+# ------------------------------------------------
+i2c:
+  sda: D2  # GPIO4
+  scl: D1  # GPIO5
+  scan: true # This will help us confirm the BME280 address in logs
+
+# ------------------------------------------------
+# SENSORS
+# ------------------------------------------------
+# 1. Temp Sensor (BME280)
+sensor:
+  - platform: bme280_i2c
+    temperature:
+      name: "Living Room Temperature"
+    humidity:
+      name: "Living Room Humidity"
+    pressure:
+      name: "Living Room Pressure"
+    address: 0x76  # IMPORTANT: If this fails, change to 0x77
+    update_interval: 120s
+
+  # 2. Light Sensor (BH1750) - DISABLED FOR NOW
+  # - platform: bh1750
+  #   name: "Living Room Light Intensity"
+  #   address: 0x23
+  #   update_interval: 10s
+
+# 3. Motion Sensor (PIR)
+binary_sensor:
+  - platform: gpio
+    pin: D5
+    name: "Living Room Motion"
+    device_class: motion
+    filters:
+      - delayed_off: 5s  # Keeps the sensor 'ON' for 5s after motion stops
