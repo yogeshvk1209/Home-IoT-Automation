@@ -1,0 +1,30 @@
+esphome:
+  name: water-pump
+  friendly_name: Water Pump
+
+esp8266:
+  board: nodemcuv2
+
+# Logging & API
+logger:
+api:
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: "Pump-Rescue"
+    password: "rescue-password"
+
+switch:
+  - platform: gpio
+    pin: D1
+    name: "Water Pump Relay"
+    id: pump_relay
+    # SAFETY: 1.5 HP pumps can overflow tanks.
+    # Auto-off after 45 minutes if someone forgets.
+    on_turn_on:
+      - delay: 45min
+      - switch.turn_off: pump_relay
