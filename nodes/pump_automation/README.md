@@ -16,13 +16,20 @@ The Relay and the Manual Wall Switch are wired in PARALLEL.
 - To turn Pump OFF, **BOTH** must be OFF.
 
 ## Hardware BOM
-| Component | Spec | Qty | Location |
+### 1. High Voltage Components (Mains Side)
+| Component | Specification | Quantity | Purpose |
 | :--- | :--- | :--- | :--- |
-| **NodeMCU** | ESP8266 | 1 | Inside Box |
-| **Relay Module** | 30A / 250V (Songle SLA-05VDC-SL-C) | 1 | Inside Box |
-| **MOV (Snubber)**| 14D471K (Varistor) | 1 | Across Pump Terminals |
-| **Power Supply** | Hi-Link PM01 or 5V Phone Charger | 1 | Mains -> ESP 5V |
-| **Connectors** | Wire Nuts (Red/Orange) or Wago 221-415 | 3 | Mains Junctions |
+| **MOV (Snubber)** | 14D471K (Metal Oxide Varistor) | 1 | Absorbs voltage spikes to protect Relay & ESP |
+| **Relay Module** | 30A / 250V (Songle SLA-05VDC-SL-C) | 1 | Switches the Pump (Rated 1.5HP) |
+| **Connectors** | Wire Nuts (Red/Orange) OR Wago 221-415 | 3 | Main junctions for "Forking" the wires |
+| **Power Supply** | Hi-Link PM01 (5V) OR USB Phone Charger | 1 | Powers the ESP8266 from 220V Mains |
+| **Terminal Strip**| 15A Connector Strip (Optional) | 1 | Alternative to Wire Nuts if preferred |
+
+### 2. Low Voltage Components (Logic Side)
+| Component | Specification | Quantity | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Controller** | ESP8266 (NodeMCU v2 or D1 Mini) | 1 | The "Brain" running ESPHome |
+| **Wires** | Dupont Jumper Wires (Female-Female) | 3 | Connects ESP to Relay (5V, GND, D1) |
 
 ## Wiring Guide (Phase 2)
 
