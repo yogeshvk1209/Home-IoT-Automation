@@ -1,0 +1,63 @@
+esphome:
+  name: room1-node
+  friendly_name:  Room1 Multi-Sensor
+
+esp32:
+  board: seeed_xiao_esp32c3
+  framework:
+    type: esp-idf
+
+logger:
+  hardware_uart: USB_SERIAL_JTAG
+api:
+  password: ""
+
+ota:
+  - platform: esphome
+    password: ""
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+  power_save_mode: none # Helps stabilize PIR by reducing power fluctuations
+
+# 1. I2C Bus (Fixed pins for XIAO)
+i2c:
+  sda: GPIO6  # Pin D4
+  scl: GPIO7  # Pin D5
+  scan: true
+  frequency: 50kHz
+
+sensor:
+  # BME280 (Temp/Hum/Pres)
+  - platform: bmp280_i2c
+    address: 0x76
+    temperature:
+      name: "Room Temperature"
+    #humidity:
+    #  name: "Room Humidity"
+    pressure:
+      name: "Room Pressure"
+    update_interval: 60s
+
+  # BH1750 (Light)
+  - platform: bh1750
+    name: "Room Light Level"
+    address: 0x23
+    update_interval: 60s
+
+# 2. Motion Sensor (PIR)
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO3  # Pin D1
+      mode: INPUT_PULLDOWN # Tries to keep the line quiet when idle
+    name: "Room Motion"
+    device_class: motion
+    # The Anti-Ghost Filter
+    filters:
+      # Must be ON for at least 0.1s to be real (Ignores radio spikes)
+      - delayed_on: 100ms
+      # Stays ON for 5s after motion stops (Prevents rapid flapping)
+      - delayed_off: 5s

@@ -1,0 +1,55 @@
+esphome:
+  name: tank-monitor
+  friendly_name: Tank Monitor
+
+esp8266:
+  board: nodemcuv2
+
+deep_sleep:
+  run_duration: 30s
+  sleep_duration: 30min
+  id: deep_sleep_1
+
+wifi:
+  ssid: "YOUR_EXTENDER_SSID"
+  password: "YOUR_PASSWORD"
+  fast_connect: true
+
+api:
+logger:
+
+binary_sensor:
+  # The Top Float (100% Level)
+  - platform: gpio
+    pin:
+      number: D2
+      mode: INPUT_PULLUP
+    name: "Tank Top Sensor"
+    id: tank_top
+    # Note: Adjust 'invert' based on your float orientation!
+    # Usually: Closed (Ground) = Floating (Wet)
+    filters:
+      - invert: true 
+
+  # The Middle Float (50% Level)
+  - platform: gpio
+    pin:
+      number: D5
+      mode: INPUT_PULLUP
+    name: "Tank Mid Sensor"
+    id: tank_mid
+    filters:
+      - invert: true
+
+# Combined Text Sensor (The "Smart" Output)
+text_sensor:
+  - platform: template
+    name: "Water Level"
+    lambda: |-
+      if (id(tank_top).state) {
+        return {"100% (Full)"};
+      } else if (id(tank_mid).state) {
+        return {"50% (Half)"};
+      } else {
+        return {"Low / Critical"};
+      }
